@@ -14,7 +14,8 @@
                     //  beforeSend: function(request) {
                     //     request.setRequestHeader("Authority", authorizationToken);
                     // },
-                     url: "http://127.0.0.1:9000/services/bmt/api/bmt-chang-ci-report/bmt-report",
+                     url: "http://127.0.0.1:8080/services/bmt/api/bmt-chang-ci-report/bmt-report",
+                    //  url: "http://gateway.jhapp.natapp1.cc/services/bmt/api/bmt-chang-ci-report/bmt-report",
                      dataType: "json",
                      success: function(data, textStatus, jqXHR){
                         alert("code:"+data.code+"\nresult:"+data.message+"\ntextStatus:"+textStatus+"\njqXHR:"+jqXHR);
