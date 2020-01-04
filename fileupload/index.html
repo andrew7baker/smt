@@ -8,6 +8,7 @@
 
     </head>
     <body>
+
         <div class="layui-upload">
             <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
             <button type="button" class="layui-btn" id="test9">开始上传</button>
@@ -40,10 +41,11 @@
             //选完文件后不自动上传
             upload.render({
                 elem: '#test8'
-                ,url: 'http://localhost:8080/˚/smt-file-upload/uploadFile'
+                ,url: 'http://localhost:8080/api/smt-file-upload/uploadFile'
                 ,auto: false
                 //,multiple: true
                 ,bindAction: '#test9'
+                ,exts:'xlsx'
                 ,done: function(res){
                     console.log(res)
                 }
