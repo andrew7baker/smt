@@ -6,6 +6,9 @@
         <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
         <script src="../js/layui/layui.js" charset="utf-8"></script>
 
+        <script src="../handsontable/dist/handsontable.full.min.js"></script>
+        <link type="text/css" rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
+
     </head>
     <body>
 
@@ -20,6 +23,18 @@
             <!--<i class="layui-icon"></i>-->
             <!--<p>点击上传，或将文件拖拽到此处</p>-->
         <!--</div>-->
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">上传后坐标对比信息</li>
+
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div id="example1" class="hot handsontable htColumnHeaders"></div>
+                </div>
+
+            </div>
+        </div>
 
     <script>
         layui.use('upload', function(){
@@ -52,5 +67,77 @@
             });
         });
     </script>
+
+        <script>
+            layui.use('element', function(){
+                var $ = layui.jquery
+                    ,element = layui.element;
+            });
+        </script>
+
+        <script>
+            var data = [
+                ['设计坐标', '', '', '', '', '贴片机坐标', '', '', ''],
+                ['位置号', 'X', 'Y', '角度','', '位置号', 'X', 'Y', '角度'],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
+                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90]
+            ];
+            document.addEventListener("DOMContentLoaded", function () {
+                var
+                    container = document.getElementById('example1'),
+                    hot;
+
+                hot = new Handsontable(container, {
+                    data: data,
+                    mergeCells: [
+                        {row: 0, col: 0, rowspan: 1, colspan: 4},
+                        {row: 0, col: 5, rowspan: 1, colspan: 4}
+                    ],
+                    renderAllRows: true,
+                    rowHeaders: true,
+                    colHeaders: true
+                });
+
+                var rows=hot.countRows();  // get the count of the rows in the table
+                var cols=hot.countCols();  // get the count of the columns in the table.
+                for(var row=0; row<rows; row++){  // go through each row of the table
+                    console.log("rows="+rows);
+                    for(var col=0; col<cols; col++){  // go through each column of the row
+                        console.log("col="+col);
+
+                        var cell = hot.getCell(row,col);
+                        cell.style.background = "##00FF00";
+                    }
+                }
+                hot.render();
+            });
+
+
+        </script>
     </body>
 </html>
