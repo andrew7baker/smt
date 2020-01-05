@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+<HEAD>
+  <TITLE> SMT </TITLE>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="./js/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+  <style>
+    body {
+      background-color: white;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    div, p, table, th, td {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      font-size: 12px;
+      font-family: dotum, Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+    }
+
+    #testIframe {
+      margin-left: 10px;
+    }
+  </style>
+  <script type="text/javascript" src="./js/ztree/js/jquery-1.4.4.min.js"></script>
+  <script type="text/javascript" src="./js/ztree/js/jquery.ztree.core.js"></script>
+  <SCRIPT type="text/javascript">
+    <!--
+    var zTree;
+    var demoIframe;
+
+    var setting = {
+      view: {
+        dblClickExpand: false,
+        showLine: true,
+        selectedMulti: false
+      },
+      data: {
+        simpleData: {
+          enable: true,
+          idKey: "id",
+          pIdKey: "pId",
+          rootPId: ""
+        }
+      },
+      callback: {
+        beforeClick: function (treeId, treeNode) {
+          var zTree = $.fn.zTree.getZTreeObj("tree");
+          if (treeNode.isParent) {
+            zTree.expandNode(treeNode);
+            return false;
+          } else {
+            demoIframe.attr("src", treeNode.file + ".html");
+            return true;
+          }
+        }
+      }
+    };
+
+    var zNodes = [
+      {id: 1, pId: 0, name: "菜单", open: true},
+      {id: 103, pId: 1, name: "球场流水记录", file: "record/index"}
+      // {id: 102, pId: 1, name: "坐标对比", file: "fileupload/index"}
+      // {id: 101, pId: 1, name: "cors", file: "ajax-cors"}
+      /*
+      {id: 101, pId: 1, name: "上板", file: "handsontable/handsontable"},
+      {id: 102, pId: 1, name: "印刷", file: "handsontable/handsontable"},
+      {id: 103, pId: 1, name: "SPI", file: "handsontable/handsontable"},
+      {id: 104, pId: 1, name: "贴片", file: "handsontable/handsontable"},
+      {id: 105, pId: 1, name: "炉前", file: "handsontable/handsontable"},
+      {id: 106, pId: 1, name: "回流焊", file: "handsontable/handsontable"},
+      {id: 107, pId: 1, name: "AOI", file: "handsontable/handsontable"},
+      {id: 108, pId: 1, name: "维修", file: "handsontable/handsontable"},
+	    {id: 109, pId: 1, name: "下板", file: "handsontable/handsontable"}
+      */
+    ];
+
+    $(document).ready(function () {
+      var t = $("#tree");
+      t = $.fn.zTree.init(t, setting, zNodes);
+      demoIframe = $("#testIframe");
+      demoIframe.bind("load", loadReady);
+      var zTree = $.fn.zTree.getZTreeObj("tree");
+      zTree.selectNode(zTree.getNodeByParam("id", 102));
+
+    });
+
+    function loadReady() {
+      var bodyH = demoIframe.contents().find("body").get(0).scrollHeight,
+        htmlH = demoIframe.contents().find("html").get(0).scrollHeight,
+        maxH = Math.max(bodyH, htmlH), minH = Math.min(bodyH, htmlH),
+        h = demoIframe.height() >= maxH ? minH : maxH;
+      if (h < 530) h = 530;
+      demoIframe.height(h);
+    }
+
+    //-->
+  </SCRIPT>
+</HEAD>
+
+<BODY>
+<TABLE border=0 height=600px align=left>
+  <TR>
+    <TD width=160px align=left valign=top style="BORDER-RIGHT: #999999 1px dashed">
+      <ul id="tree" class="ztree" style="width:160px; overflow:auto;"></ul>
+    </TD>
+    <TD width=770px align=left valign=top>
+      <IFRAME ID="testIframe" Name="testIframe" FRAMEBORDER=0 SCROLLING=AUTO width=100% height=600px
+              SRC="./record/index.html"></IFRAME>
+    </TD>
+  </TR>
+</TABLE>
+
+</BODY>
+</HTML>
