@@ -143,6 +143,18 @@
                 colHeaders: true
             });
 
+            function loadData() {
+                ajax('http://127.0.0.1:8080/api/bmt-chang-ci-report/hansontable', 'GET', '', function(res) {
+                    var data = JSON.parse(res.response);
+
+                    hot.loadData(data.data);
+                    exampleConsole.innerText = 'Data loaded';
+                });
+            }
+            // 自动加载
+            loadData();
+
+            // 点击加载
             Handsontable.dom.addEvent(load, 'click', function() {
                 ajax('http://127.0.0.1:8080/api/bmt-chang-ci-report/hansontable', 'GET', '', function(res) {
                     var data = JSON.parse(res.response);
@@ -152,7 +164,7 @@
                 });
             })
             });
-            load.click();
+
 
             // https://handsontable.com/docs/7.3.0/tutorial-load-and-save.html
         </script>
