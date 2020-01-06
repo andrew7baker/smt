@@ -90,42 +90,69 @@
 
 
         <script>
-            var data = [
-                ['付款时间', '付款人ID', '付款人', '金额', '场次'],
-                ['1月2号', 135.15, '九三', 35,'周四'],
-                ['1月2号', 135.15, '老李', 35,'周四'],
-                ['1月2号', 135.15, '九三', 35,'周四'],
-                ['1月2号', 135.15, '九三', 35,'周四']
-            ];
-            document.addEventListener("DOMContentLoaded", function () {
-                var
-                    container = document.getElementById('example1'),
-                    hot;
+            function ajax(url, method, params, callback) {
+                var obj;
 
-                hot = new Handsontable(container, {
-                    data: data,
-                    // mergeCells: [
-                    //     {row: 0, col: 0, rowspan: 1, colspan: 4},
-                    //     {row: 0, col: 5, rowspan: 1, colspan: 4}
-                    // ],
-                    renderAllRows: true,
-                    rowHeaders: true,
-                    colHeaders: true
-                });
-
-                var rows=hot.countRows();  // get the count of the rows in the table
-                var cols=hot.countCols();  // get the count of the columns in the table.
-                for(var row=0; row<rows; row++){  // go through each row of the table
-                    console.log("rows="+rows);
-                    for(var col=0; col<cols; col++){  // go through each column of the row
-                        console.log("col="+col);
-
-                        var cell = hot.getCell(row,col);
-                        cell.style.background = "##00FF00";
+                try {
+                    obj = new XMLHttpRequest();
+                } catch (e) {
+                    try {
+                        obj = new ActiveXObject("Msxml2.XMLHTTP");
+                    } catch (e) {
+                        try {
+                            obj = new ActiveXObject("Microsoft.XMLHTTP");
+                        } catch (e) {
+                            alert("Your browser does not support Ajax.");
+                            return false;
+                        }
                     }
                 }
-                hot.render();
+                obj.onreadystatechange = function () {
+                    if (obj.readyState == 4) {
+                        callback(obj);
+                    }
+                };
+                obj.open(method, url, true);
+                obj.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                obj.send(params);
+
+                return obj;
+            }
+
+            var
+                $$ = function(id) {
+                    return document.getElementById(id);
+                },
+                container = $$('example1'),
+                exampleConsole = $$('example1console'),
+                autosave = $$('autosave'),
+                load = $$('load'),
+                save = $$('save'),
+                autosaveNotification,
+                hot;
+
+
+
+            document.addEventListener("DOMContentLoaded", function () {
+                // var hot;
+
+            hot = new Handsontable(container, {
+                renderAllRows: true,
+                rowHeaders: true,
+                colHeaders: true
             });
+
+            Handsontable.dom.addEvent(load, 'click', function() {
+                ajax('http://127.0.0.1:8080/api/bmt-chang-ci-report/hansontable', 'GET', '', function(res) {
+                    var data = JSON.parse(res.response);
+
+                    hot.loadData(data.data);
+                    exampleConsole.innerText = 'Data loaded';
+                });
+            })
+            });
+            load.click();
 
             // https://handsontable.com/docs/7.3.0/tutorial-load-and-save.html
         </script>
