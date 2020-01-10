@@ -154,7 +154,7 @@
             // 自动加载
 
                 function loadData() {
-                    ajax('http://111.229.223.165:3000/payrecord', 'GET', '', function(res) {
+                    ajax('http://tx:3000/payrecord', 'GET', '', function(res) {
                         var data = JSON.parse(res.response);
 
                         hot.loadData(data);
