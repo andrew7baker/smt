@@ -154,7 +154,7 @@
             // 自动加载
 
                 function loadData() {
-                    ajax('http://tx:8888/api/payrecord?select=*,changci(name,weekday)', 'GET', '', function(res) {
+                    ajax('http://tx:8888/api/payrecord?select=paypersonname,payamount,changci(name,weekday)', 'GET', '', function(res) {
                         var data = JSON.parse(res.response);
 
 
