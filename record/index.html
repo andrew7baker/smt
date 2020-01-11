@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <!--<meta http-equiv="Access-Control-Allow-Origin" content="*">-->
         <title>流水记录</title>
         <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
         <!--<script src="../js/layui/layui.js" charset="utf-8"></script>-->
@@ -20,6 +21,13 @@
                         <input type="checkbox" name="like1[autosave]" lay-skin="primary" title="自动保存" checked="">
                     </div>
                 </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">年月选择器</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="chosemonth" placeholder="yyyy-MM">
+                    </div>
+                </div>
+
             </form>
         </div>
 
@@ -70,6 +78,7 @@
             layui.use(['form', 'layedit', 'laydate'], function(){
                 var form = layui.form
                     ,layer = layui.layer
+                    ,laydate = layui.laydate
                     ,layedit = layui.layedit;
                 //表单赋值
                 layui.$('#LAY-component-form-setval').on('click', function(){
@@ -83,7 +92,16 @@
                         ,"desc": "我爱 layui"
                     });
                 });
+
+                //年月选择器
+                laydate.render({
+                    elem: '#chosemonth'
+                    ,type: 'month'
+                });
+
             });
+
+
 
         </script>
 
@@ -154,13 +172,13 @@
             // 自动加载
 
                 function loadData() {
-                    ajax('http://tx:8888/api/payrecord?select=paypersonname,payamount,changci(name,weekday)', 'GET', '', function(res) {
+                    ajax('http://locpostgrest:8888/api/payrecord?select=paypersonname,payamount,changci(name,weekday)', 'GET', '', function(res) {
                         var data = JSON.parse(res.response);
 
 
-                        for(var i=0;i<data.length;i++){
-                            console.log("i="+i);
-                        }
+                        // for(var i=0;i<data.length;i++){
+                        //     console.log("i="+i);
+                        // }
 
                         hot.loadData(data);
                         exampleConsole.innerText = 'Data loaded';
