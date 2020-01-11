@@ -154,8 +154,13 @@
             // 自动加载
 
                 function loadData() {
-                    ajax('http://locpostgrest:8888/api/payrecord', 'GET', '', function(res) {
+                    ajax('http://tx:8888/api/payrecord?select=*,changci(name,weekday)', 'GET', '', function(res) {
                         var data = JSON.parse(res.response);
+
+
+                        for(var i=0;i<data.length;i++){
+                            console.log("i="+i);
+                        }
 
                         hot.loadData(data);
                         exampleConsole.innerText = 'Data loaded';
