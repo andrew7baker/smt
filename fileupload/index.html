@@ -1,7 +1,9 @@
 <html>
     <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-        <title>Spring Boot File Upload / Download Rest API Example</title>
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+        <meta charset="utf-8">
+
+        <title>生产监控</title>
         <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
         <script src="../js/layui/layui.js" charset="utf-8"></script>
 
@@ -20,7 +22,10 @@
 
         <div class="layui-upload">
             <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
-            <button type="button" class="layui-btn" id="test9">开始上传</button>
+            <button type="button" class="layui-btn" id="test9">手工上传</button>
+            <button type="button" class="layui-btn" id="test10">每10分钟读取数据</button>
+
+
         </div>
         <div class="layui-tab">
             <ul class="layui-tab-title">
@@ -30,15 +35,10 @@
                 <div class="layui-row">
                     <div class="layui-container">
 
-                        <div class="easyui-layout" style="width:1100px;height:550px;">
-
-                            <div data-options="region:'east',split:true" title="East" style="width:380px;">
-                                <div id="chart-container"></div>
-                            </div>
-                            <div data-options="region:'center',iconCls:'icon-ok'" title="F线主机" style="padding:5px">
+                        <div class="easyui-layout" style="width:650px;height:650px;">
+                            <!-- 多层嵌套 -->
+                            <div data-options="region:'center',iconCls:'icon-ok'" title="产品型号:CE439----C线2#机器（IP:192.168.1.132）" style="padding:5px">
                                 <div class="easyui-layout" data-options="fit:true">
-                                    <div data-options="region:'north',split:true" style="height:50px"></div>
-                                    <div data-options="region:'west',split:true" style="width:100px"></div>
                                     <div data-options="region:'center'">
                                         <div id="example1" class="hot handsontable htColumnHeaders"></div>
                                     </div>
@@ -47,16 +47,8 @@
                         </div>
 
 
-                        <div class="layui-col-xs6">
-                            <div class="grid-demo grid-demo-bg1"><div class="layui-tab-item layui-show">
-
-                            </div></div>
-                        </div>
-
                     </div>
                 </div>
-
-
 
             </div>
         </div>
@@ -104,23 +96,32 @@
 
         <script>
             var data = [
-                ['设计坐标', '', '', '', '', '贴片机坐标', '', '', ''],
-                ['位置号', 'X', 'Y', '角度','', '位置号', 'X', 'Y', '角度'],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90],
-                ['Q654', 135.15, 53.25, 270,'','C109', 67.301,48.153,-90]
+                ['H_CE439_M_301_20191130202438_201912010820', ''],
+                ['Power Time', 4294600],
+                ['Place Time', 35132],
+                ['Wait Time', 2553],
+                ['Run Time', 38354],
+                ['Stop Time', 4592],
+                ['Idle Time', 0],
+                ['In Wait Time', 1451],
+                ['Out Wait Time', 1102],
+                ['Trans Time', 669],
+                ['Wrong Stop Time', 0],
+                ['Error Stop Time', 0],
+                ['Wrong Stop Count', 8],
+                ['Error Stop Count', 12],
+                ['Panel In Count', 0],
+                ['Panel Out Count', 0],
+                ['Panel Count', 386],
+                ['PCB Count', 772],
+                ['Skip PCB Count', 0],
+                ['Operation Rate', 92.05],
+                ['Placement Rate', 81.29],
+                ['Mean Time/PCB', 88.15],
+                ['Real Time/PCB', 81.46],
+                ['Transfer Time/PCB', 1.74],
+                ['Place Count', 654],
+                ['效率', '78%']
             ];
             document.addEventListener("DOMContentLoaded", function () {
                 var
@@ -130,8 +131,7 @@
                 hot = new Handsontable(container, {
                     data: data,
                     mergeCells: [
-                        {row: 0, col: 0, rowspan: 1, colspan: 4},
-                        {row: 0, col: 5, rowspan: 1, colspan: 4}
+                        {row: 0, col: 0, rowspan: 1, colspan: 2}
                     ],
                     renderAllRows: true,
                     rowHeaders: true,
@@ -141,7 +141,7 @@
                 var rows=hot.countRows();  // get the count of the rows in the table
                 var cols=hot.countCols();  // get the count of the columns in the table.
                 for(var row=0; row<rows; row++){  // go through each row of the table
-                    console.log("rows="+rows);
+                    // console.log("rows="+rows);
                     for(var col=0; col<cols; col++){  // go through each column of the row
                         var cell = hot.getCell(row,col);
                         cell.style.background = "##00FF00";
@@ -149,140 +149,6 @@
                 }
                 hot.render();
             });
-
-            var dom = document.getElementById("container");
-            var myChart = echarts.init(dom);
-            var app = {};
-            option = null;
-            option = {
-                title: {
-                    text: '天气情况统计',
-                    subtext: '虚构数据',
-                    left: 'center'
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b} : {c} ({d}%)'
-                },
-                legend: {
-                    // orient: 'vertical',
-                    // top: 'middle',
-                    bottom: 10,
-                    left: 'center',
-                    data: ['西凉', '益州', '兖州', '荆州', '幽州']
-                },
-                series: [
-                    {
-                        type: 'pie',
-                        radius: '65%',
-                        center: ['50%', '50%'],
-                        selectedMode: 'single',
-                        data: [
-                            {
-                                value: 1548,
-                                name: '幽州',
-                                label: {
-                                    formatter: [
-                                        '{title|{b}}{abg|}',
-                                        '  {weatherHead|天气}{valueHead|天数}{rateHead|占比}',
-                                        '{hr|}',
-                                        '  {Sunny|}{value|202}{rate|55.3%}',
-                                        '  {Cloudy|}{value|142}{rate|38.9%}',
-                                        '  {Showers|}{value|21}{rate|5.8%}'
-                                    ].join('\n'),
-                                    backgroundColor: '#eee',
-                                    borderColor: '#777',
-                                    borderWidth: 1,
-                                    borderRadius: 4,
-                                    rich: {
-                                        title: {
-                                            color: '#eee',
-                                            align: 'center'
-                                        },
-                                        abg: {
-                                            backgroundColor: '#333',
-                                            width: '100%',
-                                            align: 'right',
-                                            height: 25,
-                                            borderRadius: [4, 4, 0, 0]
-                                        },
-                                        Sunny: {
-                                            height: 30,
-                                            align: 'left',
-                                            backgroundColor: {
-                                                image: weatherIcons.Sunny
-                                            }
-                                        },
-                                        Cloudy: {
-                                            height: 30,
-                                            align: 'left',
-                                            backgroundColor: {
-                                                image: weatherIcons.Cloudy
-                                            }
-                                        },
-                                        Showers: {
-                                            height: 30,
-                                            align: 'left',
-                                            backgroundColor: {
-                                                image: weatherIcons.Showers
-                                            }
-                                        },
-                                        weatherHead: {
-                                            color: '#333',
-                                            height: 24,
-                                            align: 'left'
-                                        },
-                                        hr: {
-                                            borderColor: '#777',
-                                            width: '100%',
-                                            borderWidth: 0.5,
-                                            height: 0
-                                        },
-                                        value: {
-                                            width: 20,
-                                            padding: [0, 20, 0, 30],
-                                            align: 'left'
-                                        },
-                                        valueHead: {
-                                            color: '#333',
-                                            width: 20,
-                                            padding: [0, 20, 0, 30],
-                                            align: 'center'
-                                        },
-                                        rate: {
-                                            width: 40,
-                                            align: 'right',
-                                            padding: [0, 10, 0, 0]
-                                        },
-                                        rateHead: {
-                                            color: '#333',
-                                            width: 40,
-                                            align: 'center',
-                                            padding: [0, 10, 0, 0]
-                                        }
-                                    }
-                                }
-                            },
-                            {value: 535, name: '荆州'},
-                            {value: 510, name: '兖州'},
-                            {value: 634, name: '益州'},
-                            {value: 735, name: '西凉'}
-                        ],
-                        emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
-            };
-            if (option && typeof option === "object") {
-                myChart.setOption(option, true);
-            }
-
-
         </script>
     </body>
 </html>
