@@ -161,31 +161,15 @@
                 colHeaders: true
             });
 
-            // function loadData() {
-            //     ajax('http://127.0.0.1:8080/api/bmt-chang-ci-report/hansontable', 'GET', '', function(res) {
-            //         var data = JSON.parse(res.response);
-            //
-            //         hot.loadData(data.data);
-            //         exampleConsole.innerText = 'Data loaded';
-            //     });
-            // }
-            // 自动加载
+            function loadData() {
+                ajax('http://locpostgrest:8888/api/payrecord?select=paypersonname,payamount,changci(name,weekday)', 'GET', '', function(res) {
+                    var data = JSON.parse(res.response);
+                    hot.loadData(data);
+                    // exampleConsole.innerText = 'Data loaded';
+                });
+            }
 
-                function loadData() {
-                    ajax('http://locpostgrest:8888/api/payrecord?select=paypersonname,payamount,changci(name,weekday)', 'GET', '', function(res) {
-                        var data = JSON.parse(res.response);
-
-
-                        // for(var i=0;i<data.length;i++){
-                        //     console.log("i="+i);
-                        // }
-
-                        hot.loadData(data);
-                        // exampleConsole.innerText = 'Data loaded';
-                    });
-                }
-
-                loadData();
+            loadData();
 
             // 点击加载
             Handsontable.dom.addEvent(load, 'click', function() {

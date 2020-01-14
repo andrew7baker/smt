@@ -24,6 +24,7 @@
             <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
             <button type="button" class="layui-btn" id="test9">手工上传</button>
             <button type="button" class="layui-btn" id="test10">每10分钟读取数据</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="load">加载</button>
 
 
         </div>
@@ -95,6 +96,36 @@
         </script>
 
         <script>
+            function ajax(url, method, params, callback) {
+                var obj;
+
+                try {
+                    obj = new XMLHttpRequest();
+                } catch (e) {
+                    try {
+                        obj = new ActiveXObject("Msxml2.XMLHTTP");
+                    } catch (e) {
+                        try {
+                            obj = new ActiveXObject("Microsoft.XMLHTTP");
+                        } catch (e) {
+                            alert("Your browser does not support Ajax.");
+                            return false;
+                        }
+                    }
+                }
+                obj.onreadystatechange = function () {
+                    if (obj.readyState == 4) {
+                        callback(obj);
+                    }
+                };
+                obj.open(method, url, true);
+                obj.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                obj.send(params);
+
+                return obj;
+            }
+
             var data = [
                 ['H_CE439_M_301_20191130202438_201912010820', ''],
                 ['Power Time', 4294600],
@@ -148,7 +179,20 @@
                     }
                 }
                 hot.render();
+
+                // 点击加载
+                Handsontable.dom.addEvent(load, 'click', function() {
+                    ajax('http://127.0.0.1:8080/api/bmt-chang-ci-report/getSmt', 'GET', '', function(res) {
+                        var data = JSON.parse(res.response);
+
+                        hot.loadData(data.data);
+                        // exampleConsole.innerText = 'Data loaded';
+                    });
+                })
             });
+
+
+
         </script>
     </body>
 </html>
