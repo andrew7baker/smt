@@ -6,27 +6,55 @@
     <script type="text/javascript" language="javascript">
         $(document).ready(function () {
             // jQuery.support.cors = true;
-			var access_token="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3OTkxNDkyN30.nkfZnP8EpVVyryTtXS2aAZm660u2X3s4Ps_nFVUhS8Uolx1UUea1UYOjG-Nwyuf0YJfnPl57VguBacBhkoBbxA";
-            var authorizationToken ='Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU3OTk0MzA0Mn0.g-IUfD_vfCkXYqKZFSEpB2UPV4KV-JV0eT0FmQNtZhGxOAR40jyETaZDEUzbF9bIqUv7isjMki_V_wIb74Zzdg';
             $('#JQuery_AJAX_Test').click(function () {
-              $.ajax({
-                     type: "get",
+                $.ajax({
+                    type: "get",
                     //  beforeSend: function(request) {
                     //     request.setRequestHeader("Authority", authorizationToken);
                     // },
                     //  url: "http://127.0.0.1:8080/services/bmt/api/bmt-chang-ci-report/bmt-report",
-                     url: "http://gateway.jhapp.natapp1.cc/services/bmt/api/bmt-chang-ci-report/bmt-report",
-                     dataType: "json",
-                     success: function(data, textStatus, jqXHR){
+                    url: "http://gateway.jhapp.natapp1.cc/services/bmt/api/bmt-chang-ci-report/bmt-report",
+                    dataType: "json",
+                    success: function(data, textStatus, jqXHR){
                         alert("code:"+data.code+"\nresult:"+data.message+"\ntextStatus:"+textStatus+"\njqXHR:"+jqXHR);
-                     }
-                     });
+                    }
+                });
+            });
+
+            $('#gettoken').click(function () {
+                $.ajax({
+                    type: "get",
+                    //  beforeSend: function(request) {
+                    //     request.setRequestHeader("Authority", authorizationToken);
+                    // },
+                    url: "../v2/service-hi/login?username=admin&password=admin",
+                    dataType: "json",
+                    success: function (data, textStatus, jqXHR) {
+                        document.cookie = "token="+data.token;
+                    }
+                });
+            });
+            $('#hi').click(function () {
+                var token = document.cookie.split(";")[0].split("=")[1];
+                console.log("token="+token);
+                $.ajax({
+                    type: "get",
+                    beforeSend: function(request) {
+                        request.setRequestHeader("Authorization", "Bearer "+token);
+                    },
+                    url: "../v2/demo2/hi2",
+                    dataType: "json",
+                    success: function (data, textStatus, jqXHR) {
+                        console.log("data="+  data.message);
+                    }
+                });
             });
         });
     </script>
 </head>
-<body> 
-    <a href="#" id="JQuery_AJAX_Test">JQuery AJAX Test</a><br/>
-    <div id="result"></div>
+<body>
+<a href="#" id="JQuery_AJAX_Test">JQuery AJAX Test</a><br/>
+<a href="#" id="gettoken">gettoken</a> <a href="#" id="hi">hi</a><br/>
+<div id="result"></div>
 </body>
 </html>
