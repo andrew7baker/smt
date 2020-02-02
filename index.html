@@ -62,11 +62,13 @@
 
     var zNodes = [
       {id: 1, pId: 0, name: "菜单", open: true},
-      {id: 103, pId: 1, name: "生产数据", file: "handsontable/monitor"},
+      {id: 103, pId: 1, name: "生产数据坐标对比", file: "handsontable/monitor"},
+        {id: 104, pId: 1, name: "104上传例子", file: "fileupload/index_bak"},
+        {id: 105, pId: 1, name: "105tab", file: "fileupload/index_tab"},
+        {id: 106, pId: 1, name: "106明细加按钮", file: "fileupload/index"},
+        {id: 107, pId: 1, name: "107定时取数据入库并生成列表", file: "fileupload/complex"},
         {id: 2, pId: 0, name: "微服务", open: true},
-        {id: 201, pId: 2, name: "F版调用", file: "ajax-cors"},
-      // {id: 102, pId: 1, name: "坐标对比", file: "fileupload/index"}
-      // {id: 101, pId: 1, name: "cors", file: "ajax-cors"}
+        {id: 201, pId: 2, name: "F版调用", file: "ajax-cors"}
       /*
       {id: 101, pId: 1, name: "上板", file: "handsontable/handsontable"},
       {id: 102, pId: 1, name: "印刷", file: "handsontable/handsontable"},
@@ -98,7 +100,6 @@
       if (h < 530) h = 530;
       demoIframe.height(h);
     }
-
     //-->
   </SCRIPT>
 </HEAD>
@@ -109,9 +110,9 @@
     <TD width=160px align=left valign=top style="BORDER-RIGHT: #999999 1px dashed">
       <ul id="tree" class="ztree" style="width:160px; overflow:auto;"></ul>
     </TD>
-    <TD width=770px align=left valign=top>
+    <TD width=1770px align=left valign=top>
       <IFRAME ID="testIframe" Name="testIframe" FRAMEBORDER=0 SCROLLING=AUTO width=100% height=600px
-              SRC="./fileupload/index.html"></IFRAME>
+              SRC="./fileupload/complex.html"></IFRAME>
               <!--SRC="./fileupload/index.html"></IFRAME>-->
     </TD>
   </TR>
