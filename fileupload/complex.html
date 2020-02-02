@@ -56,6 +56,9 @@
             </div>
         </div>
     <script>
+
+        var rooturl = cookie.get('rooturl') =="undefined"?"http://127.0.0.1:8080":cookie.get('rooturl');
+
         layui.use(['upload','form','laydate'], function(){
             var $ = layui.jquery
                 ,form = layui.form
@@ -199,7 +202,8 @@
                  * 加载列表数据
                  */
                 function loadData() {
-                    ajax('http://127.0.0.1:8080/api/bmt-chang-ci-report/getSmtList', 'GET', '', function(res) {
+                    // ajax('http://127.0.0.1:8080/api/bmt-chang-ci-report/getSmtList', 'GET', '', function(res) {
+                    ajax(rooturl+'/api/bmt-chang-ci-report/getSmtList', 'GET', '', function(res) {
 
                         var data = JSON.parse(res.response);
 

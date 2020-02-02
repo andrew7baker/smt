@@ -3,6 +3,7 @@
 <head>
     <title></title>
     <script src="js/ztree/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/util/cookie.js"></script>
     <script type="text/javascript" language="javascript">
         $(document).ready(function () {
             // jQuery.support.cors = true;
@@ -49,12 +50,23 @@
                     }
                 });
             });
+
+            $('#setrooturl').click(function () {
+                console.log($("#rooturl").val())
+                cookie.set('rooturl', $("#rooturl").val());
+                console.log(cookie.get('rooturl'))
+            });
+
         });
     </script>
 </head>
 <body>
 <a href="#" id="JQuery_AJAX_Test">JQuery AJAX Test</a><br/>
 <a href="#" id="gettoken">gettoken</a> <a href="#" id="hi">hi</a><br/>
-<div id="result"></div>
+<div id="result">
+    <input type="text" id="rooturl" value="http://smt.jhapp.natapp1.cc"/>
+    <button id="setrooturl">设置cokiee 中的url</button>
+
+</div>
 </body>
 </html>
