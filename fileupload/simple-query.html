@@ -12,7 +12,6 @@
         <script type="text/javascript" src="../js/util/cookie.js"></script>
     </head>
     <body>
-
     <div style="padding: 20px; background-color: #F2F2F2;">
         <div class="layui-row layui-col-space15">
             <div class="layui-col-md12">
@@ -30,7 +29,6 @@
                                             <option value="1">A线</option>
                                             <option value="2">B线</option>
                                             <option value="3">C线</option>
-
                                         </select><div class="layui-unselect layui-form-select"><div class="layui-select-title"><input type="text" placeholder="机器编号" value="" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i></div><dl class="layui-anim layui-anim-upbit"><dd lay-value="" class="layui-select-tips">机器编号</dd><dd lay-value="Y" class="">系统类型</dd><dd lay-value="N" class="">非系统类型</dd></dl></div>
                                     </div>
                                     <div class="layui-inline">
@@ -50,44 +48,11 @@
     </div>
 
     <script>
-
-        var rooturl = cookie.get('rooturl') =="undefined"?"http://127.0.0.1:8080":cookie.get('rooturl');
-
-        layui.use(['upload','form','laydate'], function(){
+        layui.use(['form'], function(){
             var $ = layui.jquery
-                ,form = layui.form
-                ,laydate = layui.laydate
-                ,upload = layui.upload;
-
-            //同时绑定多个元素，并将属性设定在元素上
-            upload.render({
-                elem: '.demoMore'
-                ,before: function(){
-                    layer.tips('接口地址：'+ this.url, this.item, {tips: 1});
-                }
-                ,done: function(res, index, upload){
-                    var item = this.item;
-                    console.log(item); //获取当前触发上传的元素，layui 2.1.0 新增
-                }
-            })
-
-            //选完文件后不自动上传
-
-            //年月选择器
-            laydate.render({
-                elem: '#chosemonth'
-                ,type: 'month'
-            });
+                ,form = layui.form;
         });
-
     </script>
-
-        <script>
-            layui.use('element', function(){
-                var $ = layui.jquery
-                    ,element = layui.element;
-            });
-        </script>
 
         <script>
             function ajax(url, method, params, callback) {
@@ -127,9 +92,6 @@
 
                 hot = new Handsontable(container, {
                     data: data,
-                    // mergeCells: [
-                    //     {row: 0, col: 0, rowspan: 1, colspan: 2}
-                    // ],
                     renderAllRows: true,
                     rowHeaders: true,
                     colHeaders: [
@@ -166,16 +128,8 @@
 
                 var rows=hot.countRows();  // get the count of the rows in the table
                 var cols=hot.countCols();  // get the count of the columns in the table.
-                for(var row=0; row<rows; row++){  // go through each row of the table
-                    // console.log("rows="+rows);
-                    for(var col=0; col<cols; col++){  // go through each column of the row
-                        var cell = hot.getCell(row,col);
-                        cell.style.background = "##00FF00";
-                    }
-                }
                 hot.render();
                 loadData();
-
                 // 点击加载
                 Handsontable.dom.addEvent(load, 'click', function() {
                     loadData();
@@ -185,13 +139,9 @@
                  * 加载列表数据
                  */
                 function loadData() {
-                    // ajax('http://127.0.0.1:8080/api/bmt-chang-ci-report/getSmtList', 'GET', '', function(res) {
                     ajax(rooturl+'/api/bmt-chang-ci-report/getSmtList', 'GET', '', function(res) {
-
                         var data = JSON.parse(res.response);
-
                         hot.loadData(data.data);
-                        // exampleConsole.innerText = 'Data loaded';
                     });
                 }
             });
