@@ -7,49 +7,55 @@
         <title>生产监控</title>
         <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
         <script src="../js/layui/layui.js" charset="utf-8"></script>
-
         <script src="../handsontable/dist/handsontable.full.min.js"></script>
         <link type="text/css" rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
-
-        <link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.7.0/themes/default/easyui.css">
-        <link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.7.0/themes/icon.css">
-
-        <script type="text/javascript" src="../js/jquery-easyui-1.7.0/jquery.min.js"></script>
-        <script type="text/javascript" src="../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
         <script type="text/javascript" src="../js/util/cookie.js"></script>
-
     </head>
     <body>
 
-        <div class="layui-upload">
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        <form class="layui-form toolbar"  action="">
+                            <div class="layui-form toolbar">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <input id="condition" class="layui-input" type="text" placeholder="名称/编码" autocomplete="off">
+                                    </div>
+                                    <div class="layui-inline">
+                                        <select id="systemFlag">
+                                            <option value="">产线</option>
+                                            <option value="1">A线</option>
+                                            <option value="2">B线</option>
+                                            <option value="3">C线</option>
 
-
-            <form class="layui-form" action="">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">产品</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="title" required lay-verify="required" placeholder="请输入产品名称" autocomplete="off" class="layui-input" >
+                                        </select><div class="layui-unselect layui-form-select"><div class="layui-select-title"><input type="text" placeholder="产线" value="" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i></div><dl class="layui-anim layui-anim-upbit"><dd lay-value="" class="layui-select-tips">产线</dd><dd lay-value="Y" class="">系统类型</dd><dd lay-value="N" class="">非系统类型</dd></dl></div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <select id="status">
+                                            <option value="">状态</option>
+                                            <option value="ENABLE">启用</option>
+                                            <option value="DISABLE">禁用</option>
+                                        </select><div class="layui-unselect layui-form-select"><div class="layui-select-title"><input type="text" placeholder="状态" value="" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i></div><dl class="layui-anim layui-anim-upbit"><dd lay-value="" class="layui-select-tips">状态</dd><dd lay-value="ENABLE" class="">启用</dd><dd lay-value="DISABLE" class="">禁用</dd></dl></div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <button id="load" class="layui-btn layui-btn-normal"><i class="layui-icon"></i>搜索</button>
+                                        <button id="btnAdd" class="layui-btn icon-btn"><i class="layui-icon"></i>添加类型</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-card-body">
+                        <div id="example1" class="hot handsontable htColumnHeaders"></div>
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">产线</label>
-                    <div class="layui-input-inline">
-                        <select name="modules" lay-verify="required" lay-search="">
-                            <option value="">直接选择或搜索选择</option>
-                            <option value="1">A线</option>
-                            <option value="2">B线</option>
-                            <option value="3">C线</option>
-                        </select>
-                    </div>
-                </div>
-            </form>
-
-            <button type="button" class="layui-btn layui-btn-normal" id="load">查询</button>
+            </div>
         </div>
+    </div>
 
-        <div class="layui-tab">
-            <div id="example1" class="hot handsontable htColumnHeaders"></div>
-        </div>
     <script>
 
         var rooturl = cookie.get('rooturl') =="undefined"?"http://127.0.0.1:8080":cookie.get('rooturl');
