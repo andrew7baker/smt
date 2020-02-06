@@ -94,9 +94,9 @@
                     renderAllRows: true,
                     rowHeaders: true,
                     colHeaders: [
-                        'ID',
-                        'VERSION',
-                        'Power Time',
+                        '产线',
+                        '机器',
+                        '日志文件名',
                         'Place Time',
                         'Wait Time',
                         'Run Time',
@@ -143,7 +143,7 @@
                     // TODO: form 序列化
                     $('#paramForm').ajaxForm();
 
-                    console.log("machineCode="+$('#machineCode').val());
+                    // console.log("machineCode="+$('#machineCode').val());
                     var params = {
                         "prodName":$("#prodName").val(),
                         "machineCode":$('#machineCode').val()
@@ -151,7 +151,7 @@
 
                     $.ajax({
                         type:'post',
-                        url:rooturl+'/api/common/getSmtList',
+                        url:rooturl+'/api/common/getReport',
                         contentType:'application/json',
                         cache:false,
                         data:JSON.stringify(params),
