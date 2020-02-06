@@ -8,7 +8,6 @@
  * */
 //对cookie的封装，采取getter、setter方式
 
-var rooturl = cookie.get('rooturl') =="undefined"?"http://127.0.0.1:8080":cookie.get('rooturl');
 
 (function(global){
   //获取cookie对象，以对象表示
