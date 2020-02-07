@@ -7,10 +7,14 @@
         <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
         <link type="text/css" rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
         <link type="text/css" rel="stylesheet" href="../js/select2/dist/css/select2.min.css" />
+        <link type="text/css" rel="stylesheet" href="../js/page/paging.css" />
+
 
         <script src="../js/layui/layui.js" charset="utf-8"></script>
+
         <script src="../handsontable/dist/handsontable.full.min.js"></script>
-        <script src="../js/util/jquery-1.7.2.js"></script>
+        <script src="../js/util/jquery-1.11.2.js"></script>
+        <script src="../js/page/paging.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/util/cookie.js"></script>
     </head>
     <body>
@@ -32,13 +36,18 @@
                                     <div class="layui-inline">
                                         <button id="query" class="layui-btn layui-btn-normal"  >查询</button>
                                     </div>
+
                                 </div>
                             </div>
                     </div>
                     <div class="layui-card-body">
                         <div id="example1" class="hot handsontable htColumnHeaders"></div>
-                        <div id="test1"></div>
+
+                        <div id="pageTool"></div>
+
+
                     </div>
+
                 </div>
             </div>
         </div>
@@ -55,7 +64,7 @@
                 form.render('select');
 
                 laypage.render({
-                    elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
+                    elem: 'pageid' //注意，这里的 pageid 是 ID，不用加 # 号
                     ,count: 100
                     ,limit: 20
                     ,theme: '#1E9FFF'
@@ -67,26 +76,22 @@
                         loadData();
                     })
                 })
+
             }); //layui.use 结束
 
-            var data = [];
-            var
-                container = document.getElementById('example1'),
+            var container = document.getElementById('example1'),
                 hot;
             function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
                 console.log("negativeValueRenderer");
                 Handsontable.renderers.TextRenderer.apply(this, arguments);
                 if (prop == 'file_name') {
-
                     td.innerHTML = '<a href="file-detail.html">'+value+'</a>';//字符串转化成HTML的写法
                 }
             }
             Handsontable.renderers.registerRenderer('negativeValueRenderer', negativeValueRenderer);
 
-
-
             hot = new Handsontable(container, {
-                data: data,
+                // data: data,
                 renderAllRows: true,
                 rowHeaders: true,
                 readOnly: true,
@@ -151,6 +156,7 @@
                     dataType:'json',
                     success:function(res){
                         hot.loadData(res.data);
+                        $('#pageTool').Paging({pagesize:10,count:100});
                     },
                     error:function(data){}
                 });
