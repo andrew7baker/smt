@@ -73,14 +73,62 @@
             var
                 container = document.getElementById('example1'),
                 hot;
+            function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
+                console.log("negativeValueRenderer");
+                Handsontable.renderers.TextRenderer.apply(this, arguments);
+                if (prop == 'file_name') {
+
+                    td.innerHTML = '<a href="file-detail.html">'+value+'</a>';//字符串转化成HTML的写法
+                }
+            }
+            Handsontable.renderers.registerRenderer('negativeValueRenderer', negativeValueRenderer);
+
+
 
             hot = new Handsontable(container, {
                 data: data,
                 renderAllRows: true,
                 rowHeaders: true,
+                readOnly: true,
                 colHeaders: [
-                    'IP', '机器', '日志文件名', '获取时间', 'Wait Time', 'Run Time', '效率'
-                ]
+                    'IP', '机器', '日志文件名', '获取时间', '操作率', '放置率', 'mean_time','实际时间','转换时间','放置个数'
+                ],
+                columns: [{
+                    data: 'machine_code',
+                    type: 'text'
+                }, {
+                    data: 'machine_name'
+                }, {
+                    data: 'file_name',
+                    type: 'text'
+                }, {
+                    data: 'crea_time',
+                    type: 'text'
+                }, {
+                    data: 'operation_rate',
+                    type: 'text'
+                }, {
+                    data: 'placement_rate',
+                    type: 'text'
+                }, {
+                    data: 'mean_time',
+                    type: 'text'
+                }, {
+                    data: 'real_time',
+                    type: 'text'
+                }, {
+                    data: 'trans_time',
+                    type: 'text'
+                }, {
+                    data: 'place_count',
+                    type: 'text'
+                }],
+
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    cellProperties.renderer = "negativeValueRenderer";
+                    return cellProperties;
+                }
             });
 
             hot.render();

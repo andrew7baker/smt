@@ -1,0 +1,125 @@
+<html>
+    <head>
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+        <meta charset="utf-8">
+
+        <title>生产监控</title>
+        <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
+        <script src="../js/layui/layui.js" charset="utf-8"></script>
+
+        <script src="../handsontable/dist/handsontable.full.min.js"></script>
+        <link type="text/css" rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
+        <script type="text/javascript" src="../js/jquery-easyui-1.7.0/jquery.min.js"></script>
+        <script type="text/javascript" src="../js/jquery-easyui-1.7.0/jquery.easyui.min.js"></script>
+    </head>
+    <body>
+
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        <div class=" toolbar">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <button id="back" class="layui-btn layui-btn-normal"  onClick="javascript :history.back(-1);">返回</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-card-body">
+                        <div class="layui-tab">
+                            <ul class="layui-tab-title">
+                                <li class="layui-this">生产数据</li>
+                            </ul>
+                            <div class="layui-tab-content">
+                                <div class="layui-row">
+                                    <div class="layui-container">
+                                        <div id="example1" class="hot handsontable htColumnHeaders"></div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        layui.use('upload', function(){
+            var $ = layui.jquery
+                ,upload = layui.upload;
+
+        });
+    </script>
+
+        <script>
+            layui.use('element', function(){
+                var $ = layui.jquery
+                    ,element = layui.element;
+            });
+        </script>
+
+        <script>
+            function ajax(url, method, params, callback) {
+                var obj;
+
+                try {
+                    obj = new XMLHttpRequest();
+                } catch (e) {
+                    try {
+                        obj = new ActiveXObject("Msxml2.XMLHTTP");
+                    } catch (e) {
+                        try {
+                            obj = new ActiveXObject("Microsoft.XMLHTTP");
+                        } catch (e) {
+                            alert("Your browser does not support Ajax.");
+                            return false;
+                        }
+                    }
+                }
+                obj.onreadystatechange = function () {
+                    if (obj.readyState == 4) {
+                        callback(obj);
+                    }
+                };
+                obj.open(method, url, true);
+                obj.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                obj.send(params);
+
+                return obj;
+            }
+
+            var data = [];
+            document.addEventListener("DOMContentLoaded", function () {
+                var
+                    container = document.getElementById('example1'),
+                    hot;
+
+                hot = new Handsontable(container, {
+                    data: data,
+                    renderAllRows: true,
+                    rowHeaders: true,
+                    colHeaders: true
+                });
+
+                ajax('http://127.0.0.1:8080/api/bmt-chang-ci-report/getSmt', 'GET', '', function(res) {
+                    var data = JSON.parse(res.response);
+
+                    hot.loadData(data.data);
+                    // exampleConsole.innerText = 'Data loaded';
+                })
+
+                hot.render();
+
+                // 点击加载
+            });
+
+
+        </script>
+    </body>
+</html>
