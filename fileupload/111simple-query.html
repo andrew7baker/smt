@@ -7,14 +7,11 @@
         <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
         <link type="text/css" rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
 
-
         <script src="../js/layui/layui.js" charset="utf-8"></script>
         <script src="../handsontable/dist/handsontable.full.min.js"></script>
         <script src="../js/util/jquery-1.7.2.js"></script>
         <script type="text/javascript" src="../js/util/cookie.js"></script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
-
+        <script src="../js/util/jquery.form.min.js"  ></script>
     </head>
     <body>
     <div style="padding: 20px; background-color: #F2F2F2;">
@@ -89,40 +86,59 @@
                     container = document.getElementById('example1'),
                     hot;
 
+                function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
+                    console.log("negativeValueRenderer");
+                    Handsontable.renderers.TextRenderer.apply(this, arguments);
+                    if (prop == 'file_name') {
+                        td.innerHTML = '<a href="file-detail.html">'+value+'</a>';//字符串转化成HTML的写法
+                    }
+                }
+                Handsontable.renderers.registerRenderer('negativeValueRenderer', negativeValueRenderer);
+
                 hot = new Handsontable(container, {
-                    data: data,
+                    // data: data,
                     renderAllRows: true,
                     rowHeaders: true,
+                    readOnly: true,
                     colHeaders: [
-                        'ID',
-                        'VERSION',
-                        'Power Time',
-                        'Place Time',
-                        'Wait Time',
-                        'Run Time',
-                        'Stop Time',
-                        'Idle Time',
-                        'In Wait Time',
-                        'Out Wait Time',
-                        'Trans Time',
-                        'Wrong Stop Time',
-                        'Error Stop Time',
-                        'Wrong Stop Count',
-                        'Error Stop Count',
-                        'Panel In Count',
-                        'Panel Out Count',
-                        'Panel Count',
-                        'PCB Count',
-                        'error_pcb',
-                        'Skip PCB Count',
-                        'Operation Rate',
-                        'Placement Rate',
-                        'Mean Time/PCB',
-                        'Real Time/PCB',
-                        'Transfer Time/PCB',
-                        'Place Count',
-                        '效率'
-                    ]
+                        'IP', '机器', '日志文件名', '获取时间', '操作率', '放置率', 'mean_time','实际时间','转换时间','放置个数'
+                    ],
+                    columns: [{
+                        data: 'machine_code',
+                        type: 'text'
+                    }, {
+                        data: 'machine_name'
+                    }, {
+                        data: 'file_name',
+                        type: 'text'
+                    }, {
+                        data: 'crea_time',
+                        type: 'text'
+                    }, {
+                        data: 'operation_rate',
+                        type: 'text'
+                    }, {
+                        data: 'placement_rate',
+                        type: 'text'
+                    }, {
+                        data: 'mean_time',
+                        type: 'text'
+                    }, {
+                        data: 'real_time',
+                        type: 'text'
+                    }, {
+                        data: 'trans_time',
+                        type: 'text'
+                    }, {
+                        data: 'place_count',
+                        type: 'text'
+                    }],
+
+                    cells: function (row, col, prop) {
+                        var cellProperties = {};
+                        cellProperties.renderer = "negativeValueRenderer";
+                        return cellProperties;
+                    }
                 });
 
                 var rows=hot.countRows();  // get the count of the rows in the table
