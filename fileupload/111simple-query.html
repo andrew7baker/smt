@@ -1,0 +1,168 @@
+<html>
+    <head>
+        <!-- 简洁查询页面 -->
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+        <meta charset="utf-8">
+        <title>生产监控</title>
+        <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
+        <link type="text/css" rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
+
+
+        <script src="../js/layui/layui.js" charset="utf-8"></script>
+        <script src="../handsontable/dist/handsontable.full.min.js"></script>
+        <script src="../js/util/jquery-1.7.2.js"></script>
+        <script type="text/javascript" src="../js/util/cookie.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+
+    </head>
+    <body>
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        <form class="layui-form toolbar" id="paramForm" action="">
+                            <div class="layui-form toolbar">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <input id="prodName" class="layui-input" type="text" placeholder="名称/编码" autocomplete="off">
+                                    </div>
+                                    <div class="layui-inline">
+                                        <select id="machineCode" style="width: 75%">
+                                            <option value="">请选择机器</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <button id="load" class="layui-btn layui-btn-normal"><i class="layui-icon"></i>查询</button>
+                                        <!--<button id="btnAdd" class="layui-btn icon-btn"><i class="layui-icon"></i>添加类型</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-card-body">
+                        <div id="example1" class="hot handsontable htColumnHeaders"></div>
+                        <div id="test1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        <script>
+            var rooturl = cookie.get('rooturl') =="undefined"?"http://127.0.0.1:8080":cookie.get('rooturl');
+
+            layui.use(['laypage','form'], function(){
+                var form = layui.form;
+                var laypage = layui.laypage,
+                    $ = layui.$;
+
+                $.ajax({
+                    type:'get',
+                    url:rooturl+'/api/common/getMachineList',
+                    contentType:'application/json',
+                    cache:false,
+                    dataType:'json',
+                    success:function(data){
+                        for(var i=0;i<data.length;i++){
+                            $("#machineCode").append('<option value='+data[i].code+'>'+data[i].name+'</option>');
+                        }
+                        form.render('select');
+                    },
+                    error:function(data){}
+                })
+
+                laypage.render({
+                    elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
+                    ,count: 100
+                    ,limit: 20
+                    ,theme: '#1E9FFF'
+                });
+            });
+
+            var data = [];
+            document.addEventListener("DOMContentLoaded", function () {
+                var
+                    container = document.getElementById('example1'),
+                    hot;
+
+                hot = new Handsontable(container, {
+                    data: data,
+                    renderAllRows: true,
+                    rowHeaders: true,
+                    colHeaders: [
+                        'ID',
+                        'VERSION',
+                        'Power Time',
+                        'Place Time',
+                        'Wait Time',
+                        'Run Time',
+                        'Stop Time',
+                        'Idle Time',
+                        'In Wait Time',
+                        'Out Wait Time',
+                        'Trans Time',
+                        'Wrong Stop Time',
+                        'Error Stop Time',
+                        'Wrong Stop Count',
+                        'Error Stop Count',
+                        'Panel In Count',
+                        'Panel Out Count',
+                        'Panel Count',
+                        'PCB Count',
+                        'error_pcb',
+                        'Skip PCB Count',
+                        'Operation Rate',
+                        'Placement Rate',
+                        'Mean Time/PCB',
+                        'Real Time/PCB',
+                        'Transfer Time/PCB',
+                        'Place Count',
+                        '效率'
+                    ]
+                });
+
+                var rows=hot.countRows();  // get the count of the rows in the table
+                var cols=hot.countCols();  // get the count of the columns in the table.
+                hot.render();
+                loadData();
+
+                // 点击加载
+                Handsontable.dom.addEvent(load, 'click', function() {
+                    loadData();
+                })
+
+
+                /**
+                 * 加载列表数据prodName
+                 */
+                function loadData() {
+                    // TODO: form 序列化
+                    $('#paramForm').ajaxForm();
+
+                    console.log("machineCode="+$('#machineCode').val());
+                    var params = {
+                        "prodName":$("#prodName").val(),
+                        "machineCode":$('#machineCode').val()
+                    };
+
+                    $.ajax({
+                        type:'post',
+                        url:rooturl+'/api/common/getReport',
+                        contentType:'application/json',
+                        cache:false,
+                        data:JSON.stringify(params),
+                        dataType:'json',
+                        success:function(res){
+                            hot.loadData(res.data);
+                        },
+                        error:function(data){}
+                    });
+                }
+            });
+        </script>
+    </body>
+</html>

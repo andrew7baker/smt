@@ -11,9 +11,8 @@
 
 
         <script src="../js/layui/layui.js" charset="utf-8"></script>
-
         <script src="../handsontable/dist/handsontable.full.min.js"></script>
-        <script src="../js/util/jquery-1.11.2.js"></script>
+        <script src="../js/util/jquery-1.7.2.js"></script>
         <script src="../js/page/paging.js" charset="utf-8"></script>
         <script type="text/javascript" src="../js/util/cookie.js"></script>
     </head>
@@ -42,9 +41,7 @@
                     </div>
                     <div class="layui-card-body">
                         <div id="example1" class="hot handsontable htColumnHeaders"></div>
-
                         <div id="pageTool"></div>
-
 
                     </div>
 
@@ -136,7 +133,12 @@
                 }
             });
 
+            // var pagebar = $('#pageTool').Paging({pagesize:10,count:100});
+
             hot.render();
+
+            var pagebar=$('#pageTool').Paging({pagesize:10,count:100});
+
 
             // 加载表格数据
             function loadData() {
@@ -156,11 +158,16 @@
                     dataType:'json',
                     success:function(res){
                         hot.loadData(res.data);
-                        $('#pageTool').Paging({pagesize:10,count:100});
+                        ops={count:res.count,pagesize:10,current:2,pagecount:5}
+                        pagebar.render(ops)
+
+
                     },
                     error:function(data){}
                 });
             }
+
+
 
             // 加载下拉框
             function initMachine(){
