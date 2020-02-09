@@ -5,11 +5,13 @@
         <meta charset="utf-8">
         <title>生产监控</title>
         <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
-        <link type="text/css" rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
+        <link rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
+        <link rel="stylesheet" href="../js/page/paging.css">
 
         <script src="../js/layui/layui.js" charset="utf-8"></script>
         <script src="../handsontable/dist/handsontable.full.min.js"></script>
         <script src="../js/util/jquery-1.7.2.js"></script>
+        <script src="../js/page/paging.js" charset="utf-8"></script>
         <script src="../js/util/cookie.js" type="text/javascript" ></script>
         <script src="../js/util/jquery.form.min.js"  ></script>
     </head>
@@ -41,8 +43,10 @@
                     </div>
                     <div class="layui-card-body">
                         <div id="example1" class="hot handsontable htColumnHeaders"></div>
-                        <div id="test1"></div>
+                        <!--<div id="test1"></div>-->
+
                     </div>
+                    <div id="pageTool"></div>
                 </div>
             </div>
         </div>
@@ -68,26 +72,23 @@
                             $("#machineCode").append('<option value='+data[i].code+'>'+data[i].name+'</option>');
                         }
                         form.render('select');
+
+
                     },
                     error:function(data){}
                 })
-
-                laypage.render({
-                    elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
-                    ,count: 100
-                    ,limit: 20
-                    ,theme: '#1E9FFF'
-                });
+                ;
             });
 
             var data = [];
+            var pagebar
             document.addEventListener("DOMContentLoaded", function () {
                 var
                     container = document.getElementById('example1'),
                     hot;
 
                 function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
-                    console.log("negativeValueRenderer");
+                    // console.log("negativeValueRenderer");
                     Handsontable.renderers.TextRenderer.apply(this, arguments);
                     if (prop == 'file_name') {
                         td.innerHTML = '<a href="file-detail.html">'+value+'</a>';//字符串转化成HTML的写法
@@ -142,25 +143,31 @@
                 });
 
                 hot.render();
-                loadData();
+                loadData(1);
 
                 // 点击加载
                 Handsontable.dom.addEvent(load, 'click', function() {
-                    loadData();
+                    loadData(1);
                 })
 
 
                 /**
                  * 加载列表数据prodName
                  */
-                function loadData() {
+                function loadData(currentpage) {
                     // TODO: form 序列化
                     $('#paramForm').ajaxForm();
-                    console.log("machineCode="+$('#machineCode').val());
+                    // console.log("【加载一 currentpage="+currentpage);
+                    // console.log("machineCode="+$('#machineCode').val());
                     var params = {
                         "prodName":$("#prodName").val(),
-                        "machineCode":$('#machineCode').val()
+                        "machineCode":$('#machineCode').val(),
+                        "pagesize":20,
+                        "currentpage":currentpage
                     };
+                    // console.log(params.currentpage)
+
+                    var p = new Paging();
 
                     $.ajax({
                         type:'post',
@@ -171,6 +178,13 @@
                         dataType:'json',
                         success:function(res){
                             hot.loadData(res.data);
+                            if(pagebar==undefined){
+                                pagebar=$('#pageTool').Paging(
+                                    {pagesize:res.pagesize,count:res.count,current:currentpage,callback:function(pagecount, size, count){
+                                        // console.log("【callback currentpage="+pagecount)
+                                        loadData(pagecount)
+                                    }});
+                            }
                         },
                         error:function(data){}
                     });
