@@ -72,8 +72,6 @@
                             $("#machineCode").append('<option value='+data[i].code+'>'+data[i].name+'</option>');
                         }
                         form.render('select');
-
-
                     },
                     error:function(data){}
                 })
@@ -82,114 +80,117 @@
 
             var data = [];
             var pagebar
-            document.addEventListener("DOMContentLoaded", function () {
-                var
-                    container = document.getElementById('example1'),
-                    hot;
+            var
+                container = document.getElementById('example1'),
+                hot;
 
-                function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
-                    // console.log("negativeValueRenderer");
-                    Handsontable.renderers.TextRenderer.apply(this, arguments);
-                    if (prop == 'file_name') {
-                        td.innerHTML = '<a href="file-detail.html">'+value+'</a>';//字符串转化成HTML的写法
-                    }
+            function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
+                // console.log("negativeValueRenderer");
+                Handsontable.renderers.TextRenderer.apply(this, arguments);
+                if (prop == 'prod_id') {
+                    console.log("vaue="+value)
+                    td.innerHTML = '<a href=file-detail.html?prod_id='+value+'>'+value+'</a>';//字符串转化成HTML的写法
                 }
-                Handsontable.renderers.registerRenderer('negativeValueRenderer', negativeValueRenderer);
+            }
+            Handsontable.renderers.registerRenderer('negativeValueRenderer', negativeValueRenderer);
 
-                hot = new Handsontable(container, {
-                    // data: data,
-                    renderAllRows: true,
-                    rowHeaders: true,
-                    readOnly: true,
-                    colHeaders: [
-                        'IP', '机器', '日志文件名', '获取时间', '操作率', '放置率', 'mean_time','实际时间','转换时间','放置个数'
-                    ],
-                    columns: [{
-                        data: 'machine_code',
-                        type: 'text'
-                    }, {
-                        data: 'machine_name'
-                    }, {
-                        data: 'file_name',
-                        type: 'text'
-                    }, {
-                        data: 'crea_time',
-                        type: 'text'
-                    }, {
-                        data: 'operation_rate',
-                        type: 'text'
-                    }, {
-                        data: 'placement_rate',
-                        type: 'text'
-                    }, {
-                        data: 'mean_time',
-                        type: 'text'
-                    }, {
-                        data: 'real_time',
-                        type: 'text'
-                    }, {
-                        data: 'trans_time',
-                        type: 'text'
-                    }, {
-                        data: 'place_count',
-                        type: 'text'
-                    }],
+            hot = new Handsontable(container, {
+                // data: data,
+                renderAllRows: true,
+                rowHeaders: true,
+                readOnly: true,
+                colHeaders: [
+                    'IP', '机器', '日志文件名', '获取时间', '操作率', '放置率', 'mean_time','实际时间','转换时间','放置个数','产品详情ID'
+                ],
+                columns: [{
+                    data: 'machine_code',
+                    type: 'text'
+                }, {
+                    data: 'machine_name'
+                }, {
+                    data: 'crea_time',
+                    type: 'text'
+                }, {
+                    data: 'operation_rate',
+                    type: 'text'
+                }, {
+                    data: 'placement_rate',
+                    type: 'text'
+                }, {
+                    data: 'mean_time',
+                    type: 'text'
+                }, {
+                    data: 'real_time',
+                    type: 'text'
+                }, {
+                    data: 'trans_time',
+                    type: 'text'
+                }, {
+                    data: 'place_count',
+                    type: 'text'
+                }, {
+                    data: 'prod_id',
+                    type: 'text'
+                }, {
+                    data: 'file_name',
+                    type: 'text'
+                }],
 
-                    cells: function (row, col, prop) {
-                        var cellProperties = {};
-                        cellProperties.renderer = "negativeValueRenderer";
-                        return cellProperties;
-                    }
-                });
+                cells: function (row, col, prop) {
+                    var cellProperties = {};
+                    cellProperties.renderer = "negativeValueRenderer";
+                    return cellProperties;
+                }
+            });
 
-                hot.render();
+            hot.render();
+            loadData(1);
+
+            // 点击加载
+            Handsontable.dom.addEvent(load, 'click', function() {
                 loadData(1);
-
-                // 点击加载
-                Handsontable.dom.addEvent(load, 'click', function() {
-                    loadData(1);
-                })
+            })
 
 
-                /**
-                 * 加载列表数据prodName
-                 */
-                function loadData(currentpage) {
-                    // TODO: form 序列化
-                    $('#paramForm').ajaxForm();
-                    // console.log("【加载一 currentpage="+currentpage);
-                    // console.log("machineCode="+$('#machineCode').val());
-                    var params = {
-                        "prodName":$("#prodName").val(),
-                        "machineCode":$('#machineCode').val(),
-                        "pagesize":20,
-                        "currentpage":currentpage
-                    };
-                    // console.log(params.currentpage)
+            /**
+             * 加载列表数据prodName
+             */
+            function loadData(currentpage) {
+                // TODO: form 序列化
+                $('#paramForm').ajaxForm();
+                // console.log("【加载一 currentpage="+currentpage);
+                // console.log("machineCode="+$('#machineCode').val());
+                var params = {
+                    "prodName":$("#prodName").val(),
+                    "machineCode":$('#machineCode').val(),
+                    "pagesize":20,
+                    "currentpage":currentpage
+                };
+                // console.log(params.currentpage)
 
-                    var p = new Paging();
+                var p = new Paging();
 
-                    $.ajax({
-                        type:'post',
-                        url:rooturl+'/api/common/getReport',
-                        contentType:'application/json',
-                        cache:false,
-                        data:JSON.stringify(params),
-                        dataType:'json',
-                        success:function(res){
-                            hot.loadData(res.data);
-                            if(pagebar==undefined){
-                                pagebar=$('#pageTool').Paging(
-                                    {pagesize:res.pagesize,count:res.count,current:currentpage,callback:function(pagecount, size, count){
+                $.ajax({
+                    type:'post',
+                    url:rooturl+'/api/common/getReport',
+                    contentType:'application/json',
+                    cache:false,
+                    data:JSON.stringify(params),
+                    dataType:'json',
+                    success:function(res){
+                        hot.loadData(res.data);
+                        if(pagebar==undefined){
+                            pagebar=$('#pageTool').Paging(
+                                {pagesize:res.pagesize,count:res.count,current:currentpage,callback:function(pagecount, size, count){
                                         // console.log("【callback currentpage="+pagecount)
                                         loadData(pagecount)
                                     }});
-                            }
-                        },
-                        error:function(data){}
-                    });
-                }
-            });
+                        }
+                    },
+                    error:function(data){}
+                });
+            }
+
         </script>
     </body>
 </html>

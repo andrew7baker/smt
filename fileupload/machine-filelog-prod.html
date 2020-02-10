@@ -82,6 +82,7 @@
                 console.log("negativeValueRenderer");
                 Handsontable.renderers.TextRenderer.apply(this, arguments);
                 if (prop == 'file_name') {
+
                     td.innerHTML = '<a href="file-detail.html">'+value+'</a>';//字符串转化成HTML的写法
                 }
             }
@@ -93,7 +94,7 @@
                 rowHeaders: true,
                 readOnly: true,
                 colHeaders: [
-                    'IP', '机器', '日志文件名', '获取时间', '操作率', '放置率', 'mean_time','实际时间','转换时间','放置个数'
+                    'IP', '机器', '日志文件名', '获取时间', '操作率', '放置率', 'mean_time','实际时间','转换时间','放置个数','PROD_ID'
                 ],
                 columns: [{
                     data: 'machine_code',
@@ -123,6 +124,9 @@
                     type: 'text'
                 }, {
                     data: 'place_count',
+                    type: 'text'
+                }, {
+                    data: 'prod_id',
                     type: 'text'
                 }],
 

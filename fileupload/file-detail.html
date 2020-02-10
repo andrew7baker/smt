@@ -53,40 +53,39 @@
 
         <script>
             var rooturl = cookie.get('rooturl') =="undefined"?"http://127.0.0.1:8080":cookie.get('rooturl');
-
             var data = [];
-            document.addEventListener("DOMContentLoaded", function () {
-                var
-                    container = document.getElementById('example1'),
-                    hot;
+            var
+                container = document.getElementById('example1'),
+                hot;
 
-                hot = new Handsontable(container, {
-                    data: data,
-                    renderAllRows: true,
-                    rowHeaders: true,
-                    colHeaders: true
-                });
-
-                var params = {
-                    "prodId":12059
-                };
-
-
-                $.ajax({
-                    type:'post',
-                    url:rooturl+'/api/common/showProdDetail',
-                    contentType:'application/json',
-                    cache:false,
-                    data:JSON.stringify(params),
-                    dataType:'json',
-                    success:function(data){
-                        hot.loadData(data.data);
-                    },
-                    error:function(data){}
-                });
-
-                hot.render();
+            hot = new Handsontable(container, {
+                data: data,
+                renderAllRows: true,
+                rowHeaders: true,
+                colHeaders: true
             });
+
+            prodId=window.location.href.split("=")[1]//得到lemon
+
+            console.log("prodId="+prodId);
+            var params = {
+                "prodId":window.location.href.split("=")[1]
+            };
+
+            $.ajax({
+                type:'post',
+                url:rooturl+'/api/common/showProdDetail',
+                contentType:'application/json',
+                cache:false,
+                data:JSON.stringify(params),
+                dataType:'json',
+                success:function(data){
+                    // console.log("file-detail");
+                    hot.loadData(data.data);
+                },
+                error:function(data){}
+            });
+
         </script>
     </body>
 </html>
