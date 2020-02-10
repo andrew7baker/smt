@@ -88,7 +88,7 @@
                 // console.log("negativeValueRenderer");
                 Handsontable.renderers.TextRenderer.apply(this, arguments);
                 if (prop == 'prod_id') {
-                    console.log("vaue="+value)
+                    // console.log("vaue="+value)
                     td.innerHTML = '<a href=file-detail.html?prod_id='+value+'>'+value+'</a>';//字符串转化成HTML的写法
                 }
             }
@@ -143,7 +143,7 @@
                 }
             });
 
-            hot.render();
+            // hot.render();
             loadData(1);
 
             // 点击加载

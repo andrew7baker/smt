@@ -1,194 +1,218 @@
 <html>
-    <head>
-        <!-- 简洁查询页面 -->
-        <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
-        <meta charset="utf-8">
-        <title>生产监控</title>
-        <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
-        <link type="text/css" rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
-        <link type="text/css" rel="stylesheet" href="../js/select2/dist/css/select2.min.css" />
-        <link type="text/css" rel="stylesheet" href="../js/page/paging.css" />
+<head>
+    <!-- 简洁查询页面 -->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+    <meta charset="utf-8">
+    <title>生产记录列表</title>
+    <link rel="stylesheet" href="../js/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="../handsontable/dist/handsontable.full.min.css">
+    <link rel="stylesheet" href="../js/page/paging.css">
 
+    <script src="../js/layui/layui.js" charset="utf-8"></script>
+    <script src="../handsontable/dist/handsontable.full.min.js"></script>
+    <script src="../js/util/jquery-1.7.2.js"></script>
+    <script src="../js/page/paging.js" charset="utf-8"></script>
+    <script src="../js/util/cookie.js" type="text/javascript" ></script>
+    <script src="../js/util/jquery.form.min.js"  ></script>
+</head>
+<body>
+<div style="padding: 20px; background-color: #F2F2F2;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <form class="layui-form toolbar" id="paramForm" action="">
+                        <div class="layui-form toolbar">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <input id="prodName" class="layui-input" type="text" placeholder="名称/编码" autocomplete="off">
+                                </div>
+                                <div class="layui-inline">
+                                    <select id="machineCode" style="width: 75%">
+                                        <option value="">请选择机器</option>
 
-        <script src="../js/layui/layui.js" charset="utf-8"></script>
-        <script src="../handsontable/dist/handsontable.full.min.js"></script>
-        <script src="../js/util/jquery-1.7.2.js"></script>
-        <script src="../js/page/paging.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/util/cookie.js"></script>
-    </head>
-    <body>
-    <div style="padding: 20px; background-color: #F2F2F2;">
-        <div class="layui-row layui-col-space15">
-            <div class="layui-col-md12">
-                <div class="layui-card">
-                    <div class="layui-card-header">
-                            <div class=" toolbar">
-                                <div class="layui-form-item">
-                                    <div class="layui-inline">
-                                        <input id="prodName" class="layui-input" type="text" placeholder="名称/编码" autocomplete="off">
-                                    </div>
-                                    <div class="layui-inline">
-                                        <select id="machineCode" >
-                                            <option value="">请选择机器</option>
-                                        </select>
-                                    </div>
-                                    <div class="layui-inline">
-                                        <button id="query" class="layui-btn layui-btn-normal"  >查询</button>
-                                    </div>
-
+                                    </select>
+                                </div>
+                                <div class="layui-inline">
+                                    <button id="load" class="layui-btn layui-btn-normal"><i class="layui-icon"></i>查询</button>
+                                    <button id="btnAdd" class="layui-btn icon-btn"><i class="layui-icon"></i>添加类型</button>
+                                    <button id="empty" type="button" class="layui-btn layui-btn-danger">清空日志</button>
                                 </div>
                             </div>
-                    </div>
-                    <div class="layui-card-body">
-                        <div id="example1" class="hot handsontable htColumnHeaders"></div>
-                        <div id="pageTool"></div>
-
-                    </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-body">
+                    <div id="example1" class="hot handsontable htColumnHeaders"></div>
+                    <!--<div id="test1"></div>-->
 
                 </div>
+                <div id="pageTool"></div>
             </div>
         </div>
     </div>
+</div>
 
-        <script>
-            var rooturl = cookie.get('rooturl') =="undefined"?"http://127.0.0.1:8080":cookie.get('rooturl');
 
-            layui.use(['laypage','form'], function(){
-                var form = layui.form;
-                var laypage = layui.laypage,
-                    $ = layui.$;
+<script>
+    var rooturl = cookie.get('rooturl') =="undefined"?"http://127.0.0.1:8080":cookie.get('rooturl');
 
+    layui.use(['laypage','form'], function(){
+        var form = layui.form;
+        var laypage = layui.laypage,
+            $ = layui.$;
+
+        $.ajax({
+            type:'get',
+            url:rooturl+'/api/common/getMachineList',
+            contentType:'application/json',
+            cache:false,
+            dataType:'json',
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    $("#machineCode").append('<option value='+data[i].code+'>'+data[i].name+'</option>');
+                }
                 form.render('select');
+            },
+            error:function(data){}
+        })
+        ;
+    });
 
-                laypage.render({
-                    elem: 'pageid' //注意，这里的 pageid 是 ID，不用加 # 号
-                    ,count: 100
-                    ,limit: 20
-                    ,theme: '#1E9FFF'
-                });
+    var data = [];
+    var pagebar
+    var
+        container = document.getElementById('example1'),
+        hot;
 
-                $( document ).ready(function() {
-                    initMachine();
-                    $("#query").click(function(){
-                        loadData();
-                    })
-                })
+    function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
+        // console.log("negativeValueRenderer");
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        if (prop == 'prod_id') {
+            console.log("vaue="+value)
+            td.innerHTML = '<a href=file-detail.html?prod_id='+value+'>'+value+'</a>';//字符串转化成HTML的写法
+        }
+    }
+    Handsontable.renderers.registerRenderer('negativeValueRenderer', negativeValueRenderer);
 
-            }); //layui.use 结束
+    hot = new Handsontable(container, {
+        // data: data,
+        renderAllRows: true,
+        rowHeaders: true,
+        readOnly: true,
+        colHeaders: [
+            'IP', '机器', '获取时间', '操作率', '放置率', 'mean_time','实际时间','转换时间','放置个数','产品详情ID', '日志文件名'
+        ],
+        columns: [{
+            data: 'machine_code',
+            type: 'text'
+        }, {
+            data: 'machine_name'
+        }, {
+            data: 'crea_time',
+            type: 'text'
+        }, {
+            data: 'operation_rate',
+            type: 'text'
+        }, {
+            data: 'placement_rate',
+            type: 'text'
+        }, {
+            data: 'mean_time',
+            type: 'text'
+        }, {
+            data: 'real_time',
+            type: 'text'
+        }, {
+            data: 'trans_time',
+            type: 'text'
+        }, {
+            data: 'place_count',
+            type: 'text'
+        }, {
+            data: 'prod_id',
+            type: 'text'
+        }, {
+            data: 'file_name',
+            type: 'text'
+        }],
 
-            var container = document.getElementById('example1'),
-                hot;
-            function negativeValueRenderer(instance, td, row, col, prop, value, cellProperties) {
-                console.log("negativeValueRenderer");
-                Handsontable.renderers.TextRenderer.apply(this, arguments);
-                if (prop == 'file_name') {
+        cells: function (row, col, prop) {
+            var cellProperties = {};
+            cellProperties.renderer = "negativeValueRenderer";
+            return cellProperties;
+        }
+    });
 
-                    td.innerHTML = '<a href="file-detail.html">'+value+'</a>';//字符串转化成HTML的写法
+    // hot.render();
+    loadData(1);
+
+    // 点击加载
+    Handsontable.dom.addEvent(load, 'click', function() {
+        loadData(1);
+    })
+
+
+
+
+    $(document).ready(function () {
+        $("#empty").click(function(){
+            emptyRelation()
+        })
+    });
+
+    /**
+     * 加载列表数据prodName
+     */
+    function loadData(currentpage) {
+        // TODO: form 序列化
+        $('#paramForm').ajaxForm();
+        var params = {
+            "prodName":$("#prodName").val(),
+            "machineCode":$('#machineCode').val(),
+            "pagesize":20,
+            "currentpage":currentpage
+        };
+        var p = new Paging();
+        $.ajax({
+            type:'post',
+            url:rooturl+'/api/common/getReport',
+            contentType:'application/json',
+            cache:false,
+            data:JSON.stringify(params),
+            dataType:'json',
+            success:function(res){
+                hot.loadData(res.data);
+                if(pagebar==undefined){
+                    pagebar=$('#pageTool').Paging(
+                        {pagesize:res.pagesize,count:res.count,current:currentpage,callback:function(pagecount, size, count){
+                                // console.log("【callback currentpage="+pagecount)
+                                loadData(pagecount)
+                            }});
                 }
             }
-            Handsontable.renderers.registerRenderer('negativeValueRenderer', negativeValueRenderer);
+        });
+    }
 
-            hot = new Handsontable(container, {
-                // data: data,
-                renderAllRows: true,
-                rowHeaders: true,
-                readOnly: true,
-                colHeaders: [
-                    'IP', '机器', '日志文件名', '获取时间', '操作率', '放置率', 'mean_time','实际时间','转换时间','放置个数','PROD_ID'
-                ],
-                columns: [{
-                    data: 'machine_code',
-                    type: 'text'
-                }, {
-                    data: 'machine_name'
-                }, {
-                    data: 'file_name',
-                    type: 'text'
-                }, {
-                    data: 'crea_time',
-                    type: 'text'
-                }, {
-                    data: 'operation_rate',
-                    type: 'text'
-                }, {
-                    data: 'placement_rate',
-                    type: 'text'
-                }, {
-                    data: 'mean_time',
-                    type: 'text'
-                }, {
-                    data: 'real_time',
-                    type: 'text'
-                }, {
-                    data: 'trans_time',
-                    type: 'text'
-                }, {
-                    data: 'place_count',
-                    type: 'text'
-                }, {
-                    data: 'prod_id',
-                    type: 'text'
-                }],
+    function emptyRelation() {
+        var params = {
 
-                cells: function (row, col, prop) {
-                    var cellProperties = {};
-                    cellProperties.renderer = "negativeValueRenderer";
-                    return cellProperties;
-                }
-            });
+        };
 
-            // var pagebar = $('#pageTool').Paging({pagesize:10,count:100});
-
-            hot.render();
-
-            var pagebar=$('#pageTool').Paging({pagesize:10,count:100});
-
-
-            // 加载表格数据
-            function loadData() {
-                // TODO: form 序列化
-                // console.log("machineCode="+$('#machineCode').val());
-                var params = {
-                    "prodName":$("#prodName").val(),
-                    "machineCode":$('#machineCode').val()
-                };
-
-                $.ajax({
-                    type:'post',
-                    url:rooturl+'/api/common/getReport',
-                    contentType:'application/json',
-                    cache:false,
-                    data:JSON.stringify(params),
-                    dataType:'json',
-                    success:function(res){
-                        hot.loadData(res.data);
-                        ops={count:res.count,pagesize:10,current:2,pagecount:5}
-                        pagebar.render(ops)
-
-                    },
-                    error:function(data){}
-                });
+        $.ajax({
+            type:'post',
+            url:rooturl+'/api/common/emptyRelation',
+            contentType:'application/json',
+            cache:false,
+            data:JSON.stringify(params),
+            dataType:'json',
+            success:function(res){
+                // hot.loadData(res.data);
+                console.log("清空日志!");
             }
+        });
+    }
 
-
-
-            // 加载下拉框
-            function initMachine(){
-                $.ajax({
-                    type:'get',
-                    url:rooturl+'/api/common/getMachineList',
-                    contentType:'application/json',
-                    cache:false,
-                    dataType:'json',
-                    success:function(data){
-                        for(var i=0;i<data.length;i++){
-                            $("#machineCode").append('<option value='+data[i].code+'>'+data[i].name+'</option>');
-                        }
-                    },
-                    error:function(data){}
-                })
-            }
-            loadData();
-        </script>
-    </body>
+</script>
+</body>
 </html>
